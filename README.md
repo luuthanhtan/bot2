@@ -1,4 +1,4 @@
-# 🤖 Discord Bot
+# 🤖 Discord Lưu Luấn Bot
 
 ## 📌 Giới thiệu
 Đây là một bot Discord được xây dựng bằng **discord.js**, sử dụng **Node.js** và có thể tích hợp với **AI**. Bot hỗ trợ các tính năng như xử lý lệnh, kết nối cơ sở dữ liệu, và các tiện ích khác (**Chích điện**).
