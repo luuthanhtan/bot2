@@ -10,6 +10,10 @@ import dotenv from 'dotenv';
 import { ROLE_HIERARCHY } from './middlewares/auth.middleware.js';
 import DiscordBotService from './services/discord.js';
 import { config } from './config.js';
+import './utils/logger.js';
+import './services/notify.js';
+import { Setting } from './models/setting.js';
+
 
 dotenv.config();
 
@@ -71,8 +75,15 @@ app.listen(PORT, () => {
   console.log(`🖥️ Server đang chạy trên port: ${PORT}`);
 });
 
-function keepAlive(): void {
+async function keepAlive(): Promise<void> {
   const url = process.env.APP_URL;
+  const settingM = new Setting();
+  await settingM.save({
+    key: 'keepAlive',
+    value: new Date().toLocaleString('vi-VN', { timeZone: 'Asia/Ho_Chi_Minh' }),
+  }, {
+    key: 'keepAlive',
+  });
   if (!url) return;
   
   fetch(url)
