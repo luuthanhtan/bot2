@@ -18,6 +18,9 @@ import * as bookmarkAdd from './slashCommands/bookmark-add.js';
 import * as bookmarkDelete from './slashCommands/bookmark-delete.js';
 import * as bookmarks from './slashCommands/bookmarks.js';
 import * as voteChoice from './slashCommands/votechoice.js';
+import { defineMessageJob } from '../src/jobs/agenda/scheduleJobs.js';
+import { agenda } from '../utils/agenda.js';
+import { scheduleDailyJobs } from '../src/queues/agendaQueue.js';
 
 
 interface CommandExecuteParams {
@@ -218,9 +221,9 @@ class ModerationService {
 }
 
 class ScheduleService {
-  async scheduleNextMessage(client: Client, config: Config): Promise<void> {
-    return scheduleNextMessage(client, config);
-  }
+  // async scheduleNextMessage(client: Client, config: Config): Promise<void> {
+  //   return scheduleNextMessage(client, config);
+  // }
 }
 
 class DiscordBotService {
@@ -328,12 +331,14 @@ class DiscordBotService {
     });
   }
 
-  onBotReady(): void {
+  async onBotReady(): Promise<void> {
     this.loggerService.log(`🤖 Bot đã sẵn sàng! Đăng nhập với tên ${this.client.user?.tag}`);
     
     this.client.user?.setActivity('!help để xem lệnh', { type: ActivityType.Watching });
     this.moderationService.ensureMutedRoleExists();
-    this.scheduleService.scheduleNextMessage(this.client, this.configService.getConfig());
+    // this.scheduleService.scheduleNextMessage(this.client, this.configService.getConfig());
+    await agenda.start();
+    await scheduleDailyJobs(agenda, this.client, this.configService.getConfig());
   }
 
   async onMessageReceived(message: Message): Promise<void> {
