@@ -7,9 +7,6 @@ import {
 } from "../../../utils/schedule.js";
 import { Agenda } from "agenda";
 
-// 🕓 Các khung giờ cần gửi message
-const SEND_HOURS = [8, 9, 10, 12, 14, 16, 18];
-
 // 📩 Nội dung theo từng khung giờ
 const MESSAGES: { [key: number]: (options: { targetId: string }) => string } = {
   9: () => `<@everyone>, Điểm danh nào! 📝 Bấm "co" nếu bạn có mặt!`,
@@ -37,10 +34,9 @@ export const defineMessageJob = (
     const weekday = nowVN.getDay();
     const currentHour = nowVN.getHours();
 
+    console.log(`🚀 Running job: ${name} at ${currentHour}h`);
     if (weekday === 0 || weekday === 6) return;
     if (currentHour !== hour) return;
-
-    console.log(`🚀 Running job: ${name} at ${currentHour}h`);
 
     const message = MESSAGES[hour]
       ? MESSAGES[hour]({ targetId })
